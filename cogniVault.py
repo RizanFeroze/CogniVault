@@ -62,7 +62,7 @@ def export_pdf(profile_data, file_name = 'profile.pdf'):
 
 # ----------- Main app ------------
 
-st.title("cogniVault: Build Your Self Profile")
+st.title("cogniVault : Build Your Self Profile")
 
 profiles = load_profiles()
 
