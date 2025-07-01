@@ -6,9 +6,16 @@ import hashlib
 import csv
 from io import StringIO
 from fpdf import FPDF
-import matplotlib.pyplot as plt
+
+# Fix matplotlib import for environments without it
+try:
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    import os
+    os.system("pip install matplotlib")
+    import matplotlib.pyplot as plt
+
 import streamlit_authenticator as stauth
-import os
 import datetime
 import openai
 import bcrypt
@@ -216,4 +223,4 @@ Now answer this question in their voice:
     st.markdown("### 🧠 Simulated Response")
     st.write(response_text)
 
-
+# Note: Removed st.experimental_rerun to maintain compatibility with Streamlit >= 1.35
