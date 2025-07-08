@@ -2,5 +2,32 @@
     "Rizanferoze@gmail.com": {
         "hashed_pass": "73a884d1509b0ca9055d6eba5f6d0d5b91161cacc00f77cef59fd4637297e0c3",
         "profile_data": {}
+    },
+    "Rizan Feroze Skull": {
+        "profile_data": {
+            "name": "RIzan Feroze",
+            "age": 10,
+            "gender": "Male",
+            "height": "178cm",
+            "weight": "96 kg",
+            "mbti": "INTJ",
+            "big5": [
+                "Conscientiousness",
+                "Openness",
+                "Neuroticism",
+                "Agreeableness",
+                "Extraversion"
+            ],
+            "occupation": "moire discipline tunnel vision",
+            "strengths": "no switch off button",
+            "weaknesses": "no emotions to anyone",
+            "goals": "wealthy , entrprenuurlial, kindess",
+            "motivation": "drive",
+            "habits": "get up around 8 am and work fro then to 10pm and head to gym and do it again",
+            "fears": "nothing ",
+            "regrets": "nothing",
+            "trauma": "failing my high school",
+            "inspiration": "prophet muhammed pbuh"
+        }
     }
 }

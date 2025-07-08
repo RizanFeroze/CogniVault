@@ -1,0 +1,8 @@
+import requests
+
+headers = {
+    "Authorization": f"Bearer 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"
+}
+
+response = requests.get("https://openrouter.ai/api/v1/models", headers=headers)
+print(response.json())

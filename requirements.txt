@@ -1,2 +1,7 @@
 streamlit
+openai
 fpdf
+matplotlib
+streamlit-authenticator
+bcrypt
+requests
