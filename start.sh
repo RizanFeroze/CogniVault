@@ -1,6 +1,11 @@
 #!/bin/bash
 
-echo "🐍 Adjusting PATH so 'uvicorn' can be found"
+echo "🐍 Installing Python dependencies in runtime shell..."
+python3 -m pip install --upgrade pip --user
+python3 -m pip install -r requirements.txt --user
+python3 -m pip install 'uvicorn[standard]' --user
+
+# ✅ Add user local bin path to PATH so uvicorn can be found
 export PATH="/opt/render/project/src/.local/bin:$PATH"
 
 echo "🚀 Starting Uvicorn..."
