@@ -3,4 +3,3 @@ startCommand: ./start.sh
 
 build:
   usePoetry: false
-
