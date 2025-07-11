@@ -1,5 +1,5 @@
 buildCommand: ./build.sh
-startCommand: source venv/bin/activate && uvicorn api_server:app --host 0.0.0.0 --port 10000
+startCommand: ./start.sh
 
 build:
   usePoetry: false
