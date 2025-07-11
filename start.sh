@@ -5,8 +5,8 @@ python3 -m pip install --upgrade pip --user
 python3 -m pip install -r requirements.txt --user
 python3 -m pip install 'uvicorn[standard]' --user
 
-# ✅ Add user local bin path to PATH so uvicorn can be found
-export PATH="/opt/render/project/src/.local/bin:$PATH"
+# ✅ Fix: Add ~/.local/bin to PATH so Render finds uvicorn
+export PATH="$HOME/.local/bin:$PATH"
 
 echo "🚀 Starting Uvicorn..."
 uvicorn api_server:app --host 0.0.0.0 --port 10000
