@@ -1,0 +1,22 @@
+[
+  {
+    "username": "devuser",
+    "text": "hi",
+    "emotion": "Reflective",
+    "cognition": "Memory",
+    "label": "Chat",
+    "theme": "Simulation",
+    "timestamp": "2025-07-11T16:15:40.292Z",
+    "linked_goals": []
+  },
+  {
+    "username": "devuser",
+    "text": "hi",
+    "emotion": "Reflective",
+    "cognition": "Memory",
+    "label": "Chat",
+    "theme": "Simulation",
+    "timestamp": "2025-07-11T18:18:15.321Z",
+    "linked_goals": []
+  }
+]

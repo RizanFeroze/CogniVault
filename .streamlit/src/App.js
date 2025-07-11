@@ -8,7 +8,7 @@ import Insights from "./pages/Insights";
 const App = () => {
   return (
     <Router>
-      <nav style={{ padding: "10px", background: "#f0f0f0" }}>
+      <nav style={{ padding: "12px", background: "#121212", color: "#fff", display: "flex", gap: "16px" }}>
         <Link to="/" style={{ marginRight: "10px" }}>Chat</Link>
         <Link to="/goals" style={{ marginRight: "10px" }}>Goals</Link>
         <Link to="/insights" style={{ marginRight: "10px" }}>Insights</Link>
