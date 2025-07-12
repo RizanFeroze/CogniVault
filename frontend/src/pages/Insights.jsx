@@ -4,7 +4,7 @@ const Insights = () => {
   const [insights, setInsights] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/insights")
+    fetch("https://cognivault.fly.dev/insights")
       .then((res) => res.json())
       .then((data) => setInsights(data))
       .catch((err) => console.error("❌ Insights fetch error:", err));

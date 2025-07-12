@@ -6,7 +6,7 @@ const Chat = () => {
 
   // Load memory history on mount
   useEffect(() => {
-    fetch("http://localhost:8000/chat")
+    fetch("https://cognivault.fly.dev/chat")
       .then((res) => res.json())
       .then((data) => setMemories(data))
       .catch((err) => console.error("❌ Fetch error:", err));
@@ -25,7 +25,8 @@ const Chat = () => {
       linked_goals: [],
     };
 
-    fetch("http://localhost:8000/memories", {
+    fetch(fetch("https://cognivault.fly.dev/memories")
+    , {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(memoryData),

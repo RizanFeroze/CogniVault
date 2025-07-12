@@ -4,7 +4,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/profile")
+    fetch("https://cognivault.fly.dev/profile")
       .then((res) => res.json())
       .then((data) => setProfile(data))
       .catch((err) => console.error("❌ Profile fetch error:", err));

@@ -4,7 +4,7 @@ const Goals = () => {
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/goals")
+    fetch("https://cognivault.fly.dev/goals")
       .then((res) => res.json())
       .then((data) => setGoals(data))
       .catch((err) => console.error("❌ Goals fetch error:", err));
