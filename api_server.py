@@ -32,10 +32,15 @@ def serve_react_app():
 # Catch-all for React Router (e.g. /profile, /goals)
 @app.get("/{full_path:path}")
 def serve_react_router(full_path: str):
+    # Avoid overriding FastAPI docs and OpenAPI routes
+    if full_path.startswith("docs") or full_path.startswith("openapi.json"):
+        return {"message": "API documentation route"}
+        
     index_path = os.path.join(frontend_path, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
     return {"error": "React app not built. Please run `npm run build` in frontend."}
+
 
 # ------------------- API ROUTES -------------------
 
