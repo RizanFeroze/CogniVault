@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import API_BASE from "../config";
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
-    fetch("https://cognivault.fly.dev/goals")
+    fetch(`${API_BASE}/goals`)
       .then((res) => res.json())
       .then((data) => setGoals(data))
       .catch((err) => console.error("❌ Goals fetch error:", err));

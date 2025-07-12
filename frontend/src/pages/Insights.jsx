@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import API_BASE from "../config";
 
 const Insights = () => {
   const [insights, setInsights] = useState([]);
 
   useEffect(() => {
-    fetch("https://cognivault.fly.dev/insights")
+    fetch(`${API_BASE}/insights`)
       .then((res) => res.json())
       .then((data) => setInsights(data))
       .catch((err) => console.error("❌ Insights fetch error:", err));

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import API_BASE from "../config";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    fetch("https://cognivault.fly.dev/profile")
+    fetch(`${API_BASE}/profile`)
       .then((res) => res.json())
       .then((data) => setProfile(data))
       .catch((err) => console.error("❌ Profile fetch error:", err));

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
+import API_BASE from "../config";
 
 const Chat = () => {
   const [memories, setMemories] = useState([]);
   const [newMemory, setNewMemory] = useState("");
 
-  // Load memory history on mount
   useEffect(() => {
-    fetch("https://cognivault.fly.dev/chat")
+    fetch(`${API_BASE}/chat`)
       .then((res) => res.json())
       .then((data) => setMemories(data))
       .catch((err) => console.error("❌ Fetch error:", err));
   }, []);
 
-  // Submit new memory
   const handleSubmit = () => {
     const memoryData = {
       username: "devuser",
@@ -25,8 +24,7 @@ const Chat = () => {
       linked_goals: [],
     };
 
-    fetch(fetch("https://cognivault.fly.dev/memories")
-    , {
+    fetch(`${API_BASE}/memories`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(memoryData),
@@ -43,7 +41,6 @@ const Chat = () => {
   return (
     <div>
       <h2>🧠 Chat Page</h2>
-
       <div style={{ margin: "20px 0" }}>
         <input
           type="text"
@@ -62,7 +59,6 @@ const Chat = () => {
           Send
         </button>
       </div>
-
       <div>
         {memories.map((mem, index) => (
           <div
