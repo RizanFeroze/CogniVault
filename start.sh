@@ -1,12 +1,13 @@
 #!/bin/bash
 
-echo "🐍 Installing Python dependencies..."
-pip install --upgrade pip
-pip install -r requirements.txt
-pip install 'uvicorn[standard]'
+echo "🐍 Installing Python dependencies in runtime shell..."
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt --user
+python3 -m pip install 'uvicorn[standard]' --user
 
-echo "🔧 Setting PATH for uvicorn..."
-export PATH="$HOME/.local/bin:$PATH"
+echo "💡 PATH before export: $PATH"
+export PATH=$PATH:~/.local/bin
+echo "💡 PATH after export: $PATH"
 
 echo "🚀 Starting Uvicorn..."
-exec ~/.local/bin/uvicorn api_server:app --host 0.0.0.0 --port 10000
+~/.local/bin/uvicorn api_server:app --host 0.0.0.0 --port 10000
