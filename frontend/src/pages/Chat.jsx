@@ -5,14 +5,21 @@ const Chat = () => {
   const [memories, setMemories] = useState([]);
   const [newMemory, setNewMemory] = useState("");
 
+  // Load memory history on mount
   useEffect(() => {
     fetch(`${API_BASE}/chat`)
       .then((res) => res.json())
-      .then((data) => setMemories(data))
-      .catch((err) => console.error("❌ Fetch error:", err));
+      .then((data) => {
+        console.log("✅ Loaded chat memories:", data);
+        setMemories(data);
+      })
+      .catch((err) => console.error("❌ Fetch error (GET /chat):", err));
   }, []);
 
+  // Handle memory submit
   const handleSubmit = () => {
+    if (!newMemory.trim()) return;
+
     const memoryData = {
       username: "devuser",
       text: newMemory,
@@ -31,10 +38,20 @@ const Chat = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        if (response.status === "success") {
-          setMemories([...memories, memoryData]);
+        console.log("✅ Response from POST /memories:", response);
+
+        // Accept both strict and fallback success conditions
+        if (response.status === "success" || response.ok || response.detail === "Memory added") {
+          setMemories((prev) => [...prev, memoryData]);
           setNewMemory("");
+        } else {
+          console.error("⚠️ Unexpected POST response:", response);
+          alert("Something went wrong saving your memory.");
         }
+      })
+      .catch((err) => {
+        console.error("❌ POST /memories failed:", err);
+        alert("Error submitting memory. Try again.");
       });
   };
 
@@ -59,6 +76,7 @@ const Chat = () => {
           Send
         </button>
       </div>
+
       <div>
         {memories.map((mem, index) => (
           <div

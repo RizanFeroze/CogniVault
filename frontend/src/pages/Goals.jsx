@@ -3,18 +3,32 @@ import API_BASE from "../config";
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/goals`)
-      .then((res) => res.json())
-      .then((data) => setGoals(data))
-      .catch((err) => console.error("❌ Goals fetch error:", err));
+      .then((res) => {
+        if (!res.ok) throw new Error("Server error");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("✅ Goals loaded:", data);
+        setGoals(data);
+      })
+      .catch((err) => {
+        console.error("❌ Goals fetch error:", err);
+        alert("Failed to load goals from server.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <div>
       <h2>🎯 Goals</h2>
-      {goals.length > 0 ? (
+
+      {loading ? (
+        <p>Loading goals...</p>
+      ) : goals.length > 0 ? (
         goals.map((g, i) => (
           <div
             key={i}
@@ -27,7 +41,7 @@ const Goals = () => {
           >
             <p><strong>{g.goal}</strong></p>
             <p>Status: {g.status}</p>
-            <small>{g.created_at}</small>
+            <small>{new Date(g.created_at).toLocaleString()}</small>
           </div>
         ))
       ) : (
