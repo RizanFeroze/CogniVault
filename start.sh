@@ -1,13 +1,12 @@
 #!/bin/bash
 
-echo "🐍 Installing Python dependencies in runtime shell..."
+echo "🐍 Installing Python dependencies..."
 python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt --user
-python3 -m pip install 'uvicorn[standard]' --user
+python3 -m pip install --user -r requirements.txt
+python3 -m pip install --user 'uvicorn[standard]'
 
-echo "💡 PATH before export: $PATH"
-export PATH=$PATH:~/.local/bin
-echo "💡 PATH after export: $PATH"
+# Export path to where Render installs user binaries
+export PATH=$PATH:/root/.local/bin
 
 echo "🚀 Starting Uvicorn..."
-~/.local/bin/uvicorn api_server:app --host 0.0.0.0 --port 10000
+python3 -m uvicorn api_server:app --host 0.0.0.0 --port 10000
