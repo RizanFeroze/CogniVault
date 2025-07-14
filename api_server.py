@@ -6,41 +6,46 @@ from pydantic import BaseModel
 import uvicorn
 import json
 import os
+import requests
+from dotenv import load_dotenv
 
+OPENROUTER_API_KEY="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"
+
+# Load environment variables from .env (if available)
+load_dotenv()
+
+# FastAPI App
 app = FastAPI()
 
-# Allow frontend to access the backend
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # change to ["http://localhost:3000"] in dev if needed
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Path to React production build
+# React build path
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend/build")
 
-# Serve static assets
+# Serve static files
 app.mount("/static", StaticFiles(directory=os.path.join(frontend_path, "static")), name="static")
 
-# Serve React index.html for root
+# Root route to serve index.html
 @app.get("/")
 def serve_react_app():
     return FileResponse(os.path.join(frontend_path, "index.html"))
 
-# Catch-all for React Router (e.g. /profile, /goals)
+# React Router fallback
 @app.get("/{full_path:path}")
 def serve_react_router(full_path: str):
-    # Avoid overriding FastAPI docs and OpenAPI routes
     if full_path.startswith("docs") or full_path.startswith("openapi.json"):
         return {"message": "API documentation route"}
-        
     index_path = os.path.join(frontend_path, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
     return {"error": "React app not built. Please run `npm run build` in frontend."}
-
 
 # ------------------- API ROUTES -------------------
 
@@ -87,6 +92,10 @@ class Goal(BaseModel):
     status: str
     created_at: str
 
+class ChatRequest(BaseModel):
+    username: str
+    text: str
+
 # ------------------- POST ROUTES -------------------
 
 @app.post("/memories")
@@ -125,8 +134,37 @@ def save_goal(goal: Goal):
 
     return {"status": "success", "message": "Goal saved"}
 
+@app.post("/chat")
+def chat_with_ai(chat: ChatRequest):
+    prompt = chat.text.strip()
+    api_key = os.getenv("OPENROUTER_API_KEY")
+
+    if not api_key:
+        return {"reply": "⚠️ OPENROUTER_API_KEY is missing in environment variables."}
+
+    try:
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "mistralai/mistral-7b-instruct",
+                "messages": [
+                    {"role": "system", "content": "You are a thoughtful, helpful AI."},
+                    {"role": "user", "content": prompt}
+                ]
+            }
+        )
+        reply = response.json()["choices"][0]["message"]["content"]
+        return {"reply": reply}
+
+    except Exception as e:
+        print("❌ Chat API error:", e)
+        return {"reply": "⚠️ AI failed to respond. Check server logs."}
+
 # ------------------- MAIN -------------------
 
 if __name__ == "__main__":
     uvicorn.run("api_server:app", host="0.0.0.0", port=8080)
-
