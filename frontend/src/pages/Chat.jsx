@@ -3,117 +3,91 @@ import API_BASE from "../config";
 
 const Chat = () => {
   const [memories, setMemories] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [newMemory, setNewMemory] = useState("");
+  const [aiReply, setAiReply] = useState("");
 
-  // Load memory history on mount
   useEffect(() => {
     fetch(`${API_BASE}/chat`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log("✅ Loaded chat history:", data);
-        setMemories(data);
-      })
+      .then((data) => setMemories(data))
       .catch((err) => console.error("❌ Fetch error (GET /chat):", err));
   }, []);
 
-  const handleSubmit = async () => {
-    if (!newMessage.trim()) return;
+  const handleSubmit = () => {
+    if (!newMemory.trim()) return;
 
-    const userText = newMessage;
-    const timestamp = new Date().toISOString();
-
-    const userBubble = {
-      role: "user",
-      text: userText,
-      timestamp,
+    const memoryData = {
+      username: "devuser",
+      text: newMemory,
+      emotion: "Reflective",
+      cognition: "Memory",
+      label: "Chat",
+      theme: "Simulation",
+      timestamp: new Date().toISOString(),
+      linked_goals: [],
     };
 
-    setMemories((prev) => [...prev, userBubble]);
-    setNewMessage("");
-    setLoading(true);
+    // Save memory
+    fetch(`${API_BASE}/memories`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(memoryData),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setMemories((prev) => [...prev, memoryData]);
+        setNewMemory("");
 
-    try {
-      const res = await fetch(`${API_BASE}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "devuser", text: userText }),
+        // Call AI
+        fetch(`${API_BASE}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: "devuser", text: memoryData.text }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const aiMessage = {
+              username: "ai",
+              text: data.reply,
+              timestamp: new Date().toISOString(),
+            };
+            setMemories((prev) => [...prev, aiMessage]);
+            setAiReply(data.reply);
+          })
+          .catch((err) => console.error("❌ GPT request failed:", err));
       });
-
-      const data = await res.json();
-
-      const aiBubble = {
-        role: "assistant",
-        text: data.reply || "⚠️ No response from AI.",
-        timestamp: new Date().toISOString(),
-      };
-
-      setMemories((prev) => [...prev, aiBubble]);
-
-      // Optional: save to /memories
-      const memoryPayload = {
-        username: "devuser",
-        text: userText,
-        emotion: "Reflective",
-        cognition: "Memory",
-        label: "Chat",
-        theme: "Simulation",
-        timestamp,
-        linked_goals: [],
-      };
-      await fetch(`${API_BASE}/memories`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(memoryPayload),
-      });
-
-    } catch (err) {
-      console.error("❌ POST /chat error:", err);
-      setMemories((prev) => [
-        ...prev,
-        { role: "assistant", text: "⚠️ AI failed to respond.", timestamp: new Date().toISOString() },
-      ]);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
     <div>
-      <h2>💬 Chat with AI</h2>
-      <div style={{ marginBottom: "20px" }}>
+      <h2>🧠 Chat with AI</h2>
+      <input
+        type="text"
+        value={newMemory}
+        onChange={(e) => setNewMemory(e.target.value)}
+        placeholder="Ask something..."
+        style={{ padding: "10px", width: "60%" }}
+      />
+      <button onClick={handleSubmit} style={{ padding: "10px 20px", marginLeft: "10px" }}>
+        Send
+      </button>
+
+      <div style={{ marginTop: "20px" }}>
         {memories.map((m, i) => (
           <div
             key={i}
             style={{
-              background: m.role === "assistant" ? "#333" : "#1e88e5",
-              color: "#fff",
+              background: m.username === "ai" ? "#444" : "#222",
+              color: "white",
+              marginBottom: "12px",
               padding: "10px",
               borderRadius: "6px",
-              margin: "6px 0",
-              textAlign: m.role === "assistant" ? "left" : "right",
             }}
           >
-            {m.text}
-            <div style={{ fontSize: "0.8em", marginTop: "4px", opacity: 0.6 }}>
-              {new Date(m.timestamp).toLocaleTimeString()}
-            </div>
+            <strong>{m.username === "ai" ? "🤖 AI" : "🧍 You"}:</strong> {m.text}
+            <div style={{ fontSize: "12px", opacity: 0.6 }}>{new Date(m.timestamp).toLocaleString()}</div>
           </div>
         ))}
-        {loading && <div>🤖 Thinking...</div>}
-      </div>
-
-      <div>
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Ask the AI something..."
-          style={{ width: "70%", padding: "8px" }}
-        />
-        <button onClick={handleSubmit} style={{ padding: "8px 16px", marginLeft: "10px" }}>
-          Send
-        </button>
       </div>
     </div>
   );
